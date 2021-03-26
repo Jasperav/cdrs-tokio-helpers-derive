@@ -6,11 +6,11 @@ use common::get_ident_string;
 pub fn impl_into_cdrs_value(ast: &syn::DeriveInput) -> quote::Tokens {
   let name = &ast.ident;
   if let syn::Body::Struct(syn::VariantData::Struct(ref fields)) = ast.body {
-    let conver_into_bytes = fields.iter().map(|field| {
+    let convert_into_bytes = fields.iter().map(|field| {
       let field_ident = field.ident.clone().unwrap();
       if get_ident_string(field.ty.clone()).as_str() == "Option" {
         return quote!{
-          match self.#field_ident {
+          match entity.#field_ident {
             Some(ref val) => {
               let field_bytes: cdrs_tokio::types::value::Bytes = val.clone().into();
               bytes.append(&mut cdrs_tokio::types::value::Value::new_normal(field_bytes).as_bytes());
@@ -22,7 +22,7 @@ pub fn impl_into_cdrs_value(ast: &syn::DeriveInput) -> quote::Tokens {
         };
       } else {
         return quote! {
-          let field_bytes: cdrs_tokio::types::value::Bytes = self.#field_ident.into();
+          let field_bytes: cdrs_tokio::types::value::Bytes = entity.#field_ident.into();
           bytes.append(&mut cdrs_tokio::types::value::Value::new_normal(field_bytes).as_bytes());
         };
       }
@@ -31,15 +31,15 @@ pub fn impl_into_cdrs_value(ast: &syn::DeriveInput) -> quote::Tokens {
     // for a struct it's enough to implement Into<Bytes> in order to be convertable into Value
     // wich is used for making queries
     quote! {
-        #[allow(clippy::from_over_into)]
-        impl Into<cdrs_tokio::types::value::Bytes> for #name {
-          fn into(self) -> cdrs_tokio::types::value::Bytes {
-            use cdrs_tokio::frame::AsBytes;
+        impl From<#name> for cdrs_tokio::types::value::Bytes {
+            fn from(entity: #name) -> Self {
+                use cdrs_tokio::frame::AsBytes;
+                let mut bytes: Vec<u8> = vec![];
 
-            let mut bytes: Vec<u8> = vec![];
-            #(#conver_into_bytes)*
-            cdrs_tokio::types::value::Bytes::new(bytes)
-          }
+                #(#convert_into_bytes)*
+
+                cdrs_tokio::types::value::Bytes::new(bytes)
+            }
         }
     }
   } else {
