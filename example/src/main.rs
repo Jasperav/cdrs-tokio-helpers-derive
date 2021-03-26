@@ -1,8 +1,6 @@
 use std::collections::HashMap;
 use cdrs_tokio::query_values;
 
-mod temp;
-
 #[derive(Clone, Debug, cdrs_tokio_helpers_derive::IntoCDRSValue, cdrs_tokio_helpers_derive::TryFromRow)]
 struct Udt {
     pub number: i32,
