@@ -1,12 +1,5 @@
+use cdrs_tokio_helpers_derive::*;
 use std::collections::HashMap;
-use cdrs_tokio::types::AsRustType;
-use cdrs_tokio::types::value::{Bytes, Value};
-use cdrs_tokio::frame::{IntoBytes, TryFromRow, TryFromUdt};
-use cdrs_tokio::types::rows::Row;
-use cdrs_tokio::types::udt::Udt;
-use cdrs_tokio::types::list::List;
-use cdrs_tokio::types::map::Map;
-use cdrs_tokio::types::from_cdrs::FromCDRSByName;
 
 // #[derive(Debug, IntoCdrsValue, TryFromRow)]
 #[derive(Clone, Debug, IntoCdrsValue, TryFromRow)]
@@ -43,7 +36,7 @@ fn main() {
     };
 
     let val: cdrs_tokio::types::value::Value = udt.clone().into();
-    let values = query_values!(udt.clone());
+    let values = cdrs_tokio::query_values!(udt.clone());
     println!("as value {:?}", val);
     println!("among values {:?}", values);
 }

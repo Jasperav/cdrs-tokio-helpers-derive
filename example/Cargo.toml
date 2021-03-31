@@ -7,5 +7,5 @@ edition = "2018"
 [dependencies]
 time = "0.1.36"
 cdrs-tokio-helpers-derive = { path = ".." }
-cdrs-tokio = "3.0"
+cdrs-tokio = { git = "https://github.com/Jasperav/cdrs-tokio" }
 uuid = "0.8"

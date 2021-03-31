@@ -48,8 +48,8 @@ pub fn impl_try_from_row(ast: &syn::DeriveInput) -> quote::Tokens {
   quote! {
       impl cdrs_tokio::types::prelude::TryFromRow for #name {
         fn try_from_row(cdrs: cdrs_tokio::types::rows::Row) -> cdrs_tokio::Result<Self> {
-            use cdrs_tokio::frame::TryFromUDT;
-            use cdrs_tokio::types::from_cdrs::FromCDRSByName;
+            use cdrs_tokio::frame::TryFromUdt;
+            use cdrs_tokio::types::from_cdrs::FromCdrsByName;
             use cdrs_tokio::types::AsRustType;
 
           Ok(#name {
